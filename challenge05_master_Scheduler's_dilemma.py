@@ -1,41 +1,29 @@
 def min_cancelled_bookings(intervals):
-    # sort by start time so we can process time wise
-    intervals.sort(key=lambda x: x[0])
-    n = len(intervals)
-    memo = {}
+    if not intervals:
+        return 0
 
-    def solve(index, previous_end_time):
-        state = (index, previous_end_time)
-        if state in memo:
-            return memo[state]
-        
-        # Base case: checked all meetings
-        if index == n:
-            return 0
-        
-        current_start, current_end = intervals[index]
-        
-        #skip this meeting and move on
-        skip = solve(index + 1, previous_end_time)
-        
-        # attend this meeting if the time slot is free
-        take = -1
-        if current_start >= previous_end_time:
-            take = 1 + solve(index + 1, current_end)
-            
-        result = max(skip, take)
-        memo[state] = result
-        return result
+    intervals.sort(key=lambda x: x[1])
 
-    # start checking from the first meeting
-    max_kept = solve(0, float('-inf'))
+    removals = 0
+    current_idx = 0
+    next_idx = 1
     
-    # cancellations = Total meetings minus the ones we could keep
-    return n - max_kept
+    while next_idx < len(intervals):
+        last_valid_end = intervals[current_idx][1]
+        next_start = intervals[next_idx][0]
+        
+        if next_start < last_valid_end:
+            # Overlap detected: remove the 'next' one
+            removals += 1
+        else:
+            # no overlap: update current pointer to this valid meeting
+            current_idx = next_idx
+            
+        next_idx += 1
+            
+    return removals
 
 #Driver Code
-schedule = [[1, 2], [2, 3], [3, 4], [1, 3]]
-removals = min_cancelled_bookings(schedule)
-
-print(f"Schedule: {schedule}")
-print(f"Minimum Cancellations Needed: {removals}")
+print()
+intervals1 = [[1, 2], [2, 3], [3, 4], [1, 3]]
+print("Example 1 Output:", min_cancelled_bookings(intervals1))
