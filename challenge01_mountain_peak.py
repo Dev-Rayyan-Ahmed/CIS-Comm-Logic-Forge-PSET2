@@ -8,4 +8,4 @@ def count_ways_to_summit(n):
 
 n_steps = 45  
 ways = count_ways_to_summit(n_steps)
-print(f"For {n_steps} steps, the unoptimized approach found {ways} unique ways to reach the summit.")
+print(f"For {n_steps} steps, Found {ways} unique ways to reach the summit.")
