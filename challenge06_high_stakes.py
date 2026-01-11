@@ -1,28 +1,35 @@
 def maximize_freelance_profit(deadlines, profits):
-    #combining deadlines and profits
-    jobs = []
-    for d, p in zip(deadlines, profits):
-        jobs.append((d, p))
-    
-    #sorting jobs by profit descending
-    jobs.sort(key=lambda x: x[1], reverse=True)
-    
-    max_deadline = max(deadlines) if deadlines else 0
-    #tracking empty slots (false means empty)
-    timeline = [False] * (max_deadline + 1)
+    parent = list(range(max(deadlines) + 1))
+
+    def find(i):
+        #compressing path for speed
+        if parent[i] == i:
+            return i
+        parent[i] = find(parent[i])
+        return parent[i]
+
+    def union(i, j):
+        root_i = find(i)
+        root_j = find(j)
+        if root_i != root_j:
+            parent[root_i] = root_j
+
+    #combining and sorting by profit
+    jobs = sorted(zip(deadlines, profits), key=lambda x: x[1], reverse=True)
     
     count = 0
     total_profit = 0
     
     for deadline, profit in jobs:
-        #checking slots backwards from deadline
-        for t in range(min(deadline, max_deadline), 0, -1):
-            if not timeline[t]:
-                timeline[t] = True
-                count += 1
-                total_profit += profit
-                break 
-                
+        #finding latest available slot
+        available_slot = find(deadline)
+        
+        if available_slot > 0:
+            count += 1
+            total_profit += profit
+            #merging slot with previous one
+            union(available_slot, available_slot - 1)
+            
     return [count, total_profit]
 
 # Driver Code
