@@ -1,20 +1,26 @@
 import math
+
 def calculate_minimum_speed(piles, k):
+    left = 1
+    right = max(piles)
+    result = right
 
-    max_pile = max(piles)
-
-    #checking every speed from 1 up to the max pile size
-    for speed in range(1, max_pile + 1):
+    while left <= right:
+        mid_speed = (left + right) // 2
         hours_needed = 0
         
         for p in piles:
-            hours_needed += math.ceil(p / speed)
+            hours_needed += math.ceil(p / mid_speed)
             
-        #returning the first speed that fits the time limit
         if hours_needed <= k:
-            return speed
-
-    return max_pile
+            result = mid_speed
+    
+            right = mid_speed - 1
+        else:
+    
+            left = mid_speed + 1
+            
+    return result
 
 # Driver Code
 piles1 = [5, 10, 3]
