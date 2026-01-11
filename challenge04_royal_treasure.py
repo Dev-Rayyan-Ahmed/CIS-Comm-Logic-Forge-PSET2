@@ -9,7 +9,6 @@ def count_payment_combinations(coins, total_sum):
 
     return dp[total_sum]
 
-
 print()
 print("Case A:", count_payment_combinations([1, 2, 3], 4))  # Output: 4
 print("Case B:", count_payment_combinations([2, 5, 3, 6], 10))  # Output: 5
