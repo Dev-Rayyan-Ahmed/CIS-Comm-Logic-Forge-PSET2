@@ -1,24 +1,33 @@
 def find_longest_mirror_length(s):
-    
-    def solve(start, end):
-        # Base Case: If indicators cross, empty string
-        if start > end:
-            return 0
+    n = len(s)
+    if n == 0:
+        return 0
         
-        # Base Case: One character left
-        if start == end:
-            return 1
+    # Creating a table to store results of subproblems
+    dp = [[0 for _ in range(n)] for _ in range(n)]
+    
+    # strings of length 1 are always palindromes of length 1
+    for i in range(n):
+        dp[i][i] = 1
+        
+    # building table, cl is length of substring
+    for cl in range(2, n + 1):
+        for i in range(n - cl + 1):
+            j = i + cl - 1
             
-        #  Match found
-        if s[start] == s[end]:
-            return 2 + solve(start + 1, end - 1)
-            
-        return max(solve(start + 1, end), solve(start, end - 1))
-
-    return solve(0, len(s) - 1)
+            if s[i] == s[j] and cl == 2:
+                dp[i][j] = 2
+            elif s[i] == s[j]:
+                dp[i][j] = dp[i + 1][j - 1] + 2
+            else:
+                dp[i][j] = max(dp[i][j - 1], dp[i + 1][j])
+                
+    return dp[0][n - 1]
 
 # Driver Code
-test_str = "bbabcbcab"
-length = find_longest_mirror_length(test_str)
-print(f"Input Sequence: '{test_str}'")
-print(f"Longest Palindromic Subsequence Length: {length}")
+test_cases = ["bbabcbcab", "cbbd", "racecar"]
+print()
+for s in test_cases:
+    print(f"Input: '{s}'")
+    print(f"Result: {find_longest_mirror_length(s)}")
+    print("-" * 20)
