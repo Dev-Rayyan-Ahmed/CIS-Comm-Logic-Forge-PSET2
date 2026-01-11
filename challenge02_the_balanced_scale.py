@@ -5,18 +5,21 @@ def can_balance_scales(arr):
         return False
         
     target = total_weight // 2
-    n = len(arr)
+    possible_sums = {0}
     
-    def check_subset(index, current_sum):
-        if current_sum == target:
-            return True
-        if index >= n or current_sum > target:
-            return False
-            
-        return check_subset(index + 1, current_sum + arr[index]) or check_subset(index + 1, current_sum)
+    for stone in arr:
+        current_sums = list(possible_sums)
+        for s in current_sums:
+            new_sum = s + stone
+            if new_sum == target:
+                return True
+            if new_sum < target:
+                possible_sums.add(new_sum)
+                
+    return target in possible_sums
 
-    return check_subset(0, 0)
 
-stones = [1, 5, 11, 5]
-result = can_balance_scales(stones)
-print(f"Can the stones {stones} be split into two equal bags? {result}")
+test_stones = [[1, 5, 11, 5],[1,2,4],[1,2,2,1]]
+for stones in test_stones:
+    result = can_balance_scales(stones)
+    print(f"Can the stones {stones} be split into two equal bags? {result}")
